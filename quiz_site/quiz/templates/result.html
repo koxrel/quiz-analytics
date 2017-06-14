@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %} {{ quiz.title }} {% endblock %}
+{% block description %} {% trans "Результаты выполнения теста" %} {{ quiz.title }} {% endblock %}
+
+{% block content %}
+    {% if max_score %}
+        <div>
+            <h2>{% trans "Результат" %}</h2>
+            <p>
+                <small class="muted">{% trans "Название теста: " %}:</small>
+                <strong>{{ quiz.title }}</strong></p>
+
+            <p class="lead">
+                {% trans "Вы ответили правильно на" %} {{ score }} {% trans "из" %} {{ max_score }},
+                {% trans "что равняется" %} {{ percent }}%.
+            </p>
+
+            {% if quiz.pass_mark %}
+                <hr>
+                <p class="lead">{{ sitting.result_message }}</p>
+                <hr>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

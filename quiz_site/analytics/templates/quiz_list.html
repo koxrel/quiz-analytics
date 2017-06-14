@@ -1,0 +1,35 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Отчеты для тестов" %} | {% trans "Система тестирования" %}
+{% endblock %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="/admin/">{% trans "Home" %}</a> > {% trans 'Отчеты' %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="results">
+    <table id="result-list">
+    <thead>
+        <tr>
+            <th class="column-title">
+                <div class="text">
+                    {% trans "Название" %}
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quiz in object_list %}
+            <tr>
+                <td class="field-title"><a href="{% url 'analytics:summary' quiz_name=quiz.url %}">{{ quiz.title }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock %}

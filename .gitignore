@@ -1,0 +1,5 @@
+.coverage
+.python-version
+*.sqlite3
+__pycache__/
+logs/

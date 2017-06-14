@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}
+    Домашняя страница
+{% endblock %}
+
+{% block bar %}
+    Домашняя страница
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <h2>{% trans "Добро пожаловать в систему тестирования!" %}</h2>
+        <h4>{% trans "Пожалуйста, перейдите по ссылке, которую Вам предоставили, для начала выполнения теста." %}</h4>
+        <a href="{% url "quiz_users:login" %}" class="btn btn-success">{% trans "Войти" %}</a>
+        <a href="{% url "quiz_users:register" %}" class="btn btn-primary">{% trans "Зарегистрироваться" %}</a>
+    </div>
+{% endblock %}

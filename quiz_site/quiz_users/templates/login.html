@@ -1,0 +1,26 @@
+{% extends 'auth_master.html' %}
+
+{% block title %} Вход {% endblock %}
+
+{% block content %}
+    <div>
+        {% if error %}
+            <div class="alert alert-warning">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="" method=post>
+            {% csrf_token %} {{ form.non_field_errors }} {{ form.as_p }}
+
+            <div>
+                <div class="pull-left">
+                    <input class="btn btn-primary" type="submit" value="Войти"/>
+                </div>
+                <div class="pull-right">
+                    <a href="/auth/register">Или зарегистрируйтесь</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

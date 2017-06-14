@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}
+    {{ quiz.title }}
+{% endblock %}
+
+{% block bar %}
+    {{ quiz.title }} - {% trans "Просмотр" %}
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h2>{{ quiz.title }}</h2>
+        <h5>{% trans "Вы сможете пройти данный тест только один раз" %}.</h5>
+        <p>{{ quiz.description }}</p>
+        <p>
+            <a href="{% url 'quiz:take' quiz_name=quiz.url %}" class="btn btn-primary">
+                {% trans "Начать тест" %}
+            </a>
+        </p>
+    </div>
+{% endblock %}

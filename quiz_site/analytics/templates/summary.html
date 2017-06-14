@@ -1,0 +1,137 @@
+{% extends 'admin/base_site.html' %}
+
+{% load i18n %}
+{% block title %}
+    {% trans "Сводный отчет" %} - {{ quiz.title }}
+{% endblock %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="/admin/">{% trans "Home" %}</a> > <a href="{% url "analytics:list" %}">{% trans 'Отчеты' %}</a>
+        > {{ quiz.title }}
+    </div>
+{% endblock %}
+{% block extrastyle %}
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        {% if sittings %}
+
+            <div class="col-md-6" id="pie-chart" style="height: 500px;">
+
+            </div>
+            <div class="col-md-6" id="histogram" style="height: 500px;">
+
+            </div>
+
+            <div class="col-md-4 alert alert-info text-center">
+                Кол-во сдавших
+                <h3>{{ sittings|length }}</h3>
+                человек
+            </div>
+            <div class="col-md-4 alert alert-warning text-center">
+                Средняя успеваемость
+                <h3>{{ score_avg }}</h3>
+                процентов
+            </div>
+            <div class="col-md-4 alert alert-success text-center">
+                Среднее время прохождения
+                <h3>{{ duration_avg }}</h3>
+                минут
+            </div>
+
+            {% if incorrect_questions_top %}
+                <div class="col-md-12">
+                    <h3>{% trans "Вопросы, на которые наиболее часто отвечают неправильно:" %}</h3>
+                    <br>
+                    {% for question in  incorrect_questions_top %}
+                        <div class="alert alert-info">
+                            {{ question.content }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <br>
+            <h3>Следующие пользователи прошли тест:</h3>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Email</th>
+                    <th>Результат</th>
+                    <th>Время выполнения</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sitting in sittings %}
+                    <tr>
+                        <td>{{ sitting.user.first_name }}</td>
+                        <td>{{ sitting.user.last_name }}</td>
+                        <td>{{ sitting.user.email }}</td>
+                        <td>
+                            <a href="{% url "analytics:user" quiz_name=quiz.url username=sitting.user.username %}">{{ sitting.get_percent_correct }}%</a>
+                        </td>
+                        <td>{{ sitting.get_duration }} минут</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h3>{% trans "Данный тест еще никто не проходил." %}</h3>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load("current", {packages: ["corechart"]});
+        google.charts.setOnLoadCallback(drawPieChart);
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawPieChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Результат', 'Количество'],
+                ['Прошли', {{ pie_chart_data.0 }}],
+                ['Не прошли', {{ pie_chart_data.1 }}]
+            ]);
+
+            var options = {
+                title: 'Результат',
+                pieHole: 0.4
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Имя', 'Процент правильных ответов'],
+                {% for sitting in sittings %}
+                    ["{{ sitting.user.first_name }} {{ sitting.user.last_name }}", {{ sitting.get_percent_correct }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: 'Процент правильных ответов',
+                legend: {position: 'none'},
+                bar: {gap: 5},
+                colors: ['#e7711c']
+            };
+
+            var chart = new google.visualization.Histogram(document.getElementById('histogram'));
+            chart.draw(data, options);
+        }
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+{% endblock %}

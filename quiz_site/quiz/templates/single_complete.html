@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% load quiz_tags %}
+
+{% block title %} {{ quiz.title }} {% endblock %}
+{% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
+
+{% block bar %}
+    {{ quiz.title }} - {% trans "Уже пройден" %}
+{% endblock %}
+
+{% block content %}
+    <div class="alert alert-info" style="max-width: 600px; margin: auto; text-align: center">
+        {% trans "Вы уже выполнили данный тест" %}.
+    </div>
+{% endblock %}
